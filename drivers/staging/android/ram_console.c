@@ -358,7 +358,7 @@ static int ram_console_driver_probe(struct platform_device *pdev)
 
 //LGE_CHNAGE_S  euikyeom.kim@lge.com from sunghoon.kim@lge.com
 #if defined (CONFIG_STAR_REBOOT_MONITOR) || defined (CONFIG_BSSQ_REBOOT_MONITOR)
-#ifndef CONFIG_CM_BOOTLOADER_COMPAT
+#if !defined(CONFIG_CM_BOOTLOADER_COMPAT) || defined(CONFIG_MACH_STAR_P999)
         reserved_buffer = buffer + buffer_size;
 #else
         /* Force the reserved_buffer to be at its old (Froyo/GB) location
