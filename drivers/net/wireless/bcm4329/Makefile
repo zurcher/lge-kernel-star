@@ -60,7 +60,7 @@ EXTRA_CFLAGS = \
 	-I$(SRCROOT)/dhd/sys \
 	-I$(SRCROOT)/dongle \
 	-I$(SRCROOT)/wl/sys \
-	\
+	-fno-pic\
 	-DIOCTL_RESP_TIMEOUT=2000 \
 	-DSDIO_VENDOR_ID_BROADCOM=0x2d0 \
 	-DSDIO_DEVICE_ID_BROADCOM_4325=0x4c6 \
