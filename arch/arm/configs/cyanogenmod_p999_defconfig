@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux/arm 2.6.39.4 Kernel Configuration
-# Fri Dec 14 21:00:41 2012
+# Fri Dec 14 21:14:19 2012
 #
 CONFIG_ARM=y
 CONFIG_HAVE_PWM=y
@@ -1579,7 +1579,7 @@ CONFIG_MAX8907C_CHARGER=y
 CONFIG_BATTERY_BQ20Z75=y
 # CONFIG_BATTERY_BQ27x00 is not set
 # CONFIG_CHARGER_SMB349 is not set
-# CONFIG_BATTERY_MAX17040 is not set
+CONFIG_BATTERY_MAX17040=y
 # CONFIG_BATTERY_MAX17042 is not set
 # CONFIG_BATTERY_MAX17048 is not set
 # CONFIG_CHARGER_ISP1704 is not set
