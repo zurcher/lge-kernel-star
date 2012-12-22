@@ -2329,6 +2329,8 @@ static int ts_ldisc_open(struct tty_struct *tty)
         sema_init(&ts0710_connection.dlci[i].tx.write_sema, 0);
     }
 
+    printk(KERN_INFO "ts_ldisc_open opening tty(%d)", tty);
+
     ipc_tty = tty;
 
     spin_lock_init(&tx_lock);
