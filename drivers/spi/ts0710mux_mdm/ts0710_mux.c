@@ -2018,8 +2018,10 @@ static int mux_open(struct tty_struct *tty, struct file *filp)
 
     mux_filp[dlci] = filp;
 
-    if (!(ipc_tty && dlci))
+    if (!(ipc_tty && dlci)) {
+	printk(KERN_INFO "mux_open ENODEV caused by missing ipc_tty or dlci");
         return retval;
+    }
 
     mux_tty[dlci]++;
     mux_table[dlci] = tty;
@@ -2030,6 +2032,7 @@ static int mux_open(struct tty_struct *tty, struct file *filp)
         ts0710_init();
 
         mux_tty[dlci]--;
+	printk(KERN_INFO "mux_open error %d caused by failure in ts0710_open_channel");
         return retval;
     }
 
@@ -2041,11 +2044,14 @@ static int mux_open(struct tty_struct *tty, struct file *filp)
         ts0710_reset_dlci(dlci);
 
         mux_tty[dlci]--;
+	printk(KERN_INFO "mux_open error %d caused by failure in ts0710_open_channel(dlci)");
         return retval;
     }
 
     dlci_data->tx.wakeup_flag = 0;
     tty->low_latency = 1;
+
+    printk(KERN_INFO "mux_open returning 0, success");
 
     return 0;
 }
