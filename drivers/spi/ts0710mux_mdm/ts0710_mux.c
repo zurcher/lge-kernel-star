@@ -2019,7 +2019,7 @@ static int mux_open(struct tty_struct *tty, struct file *filp)
     mux_filp[dlci] = filp;
 
     if (!(ipc_tty && dlci)) {
-	printk(KERN_INFO "mux_open ENODEV caused by missing ipc_tty or dlci");
+	printk(KERN_INFO "mux_open ENODEV caused by missing ipc_tty (%d) or dlci (%d)", ipc_tty, dlci);
         return retval;
     }
 
