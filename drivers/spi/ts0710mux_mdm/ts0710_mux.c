@@ -111,6 +111,7 @@
 /*------------------------------------------------------------------*/
 #define MUX_DRIVER_NAME                             "ts0710mux"
 #define MUX_DRIVER_VERSION                          "23-mar-12"
+#define MUX_LDISC_DRIVER_NAME                       "ts07.10"
 static const char mux_drv_driver_name[]             = MUX_DRIVER_NAME;
 static const char mux_drv_driver_version[]          = MUX_DRIVER_VERSION;
 /*------------------------------------------------------------------*/
@@ -2657,7 +2658,7 @@ struct tty_operations mux_ops = {
 static struct tty_ldisc_ops ts_ldisc = {
     .owner              = THIS_MODULE,
     .magic              = TTY_LDISC_MAGIC,
-    .name               = MUX_DRIVER_NAME,
+    .name               = MUX_LDISC_DRIVER_NAME,
     .open               = ts_ldisc_open,
     .close              = ts_ldisc_close,
     .read               = ts_ldisc_read,
