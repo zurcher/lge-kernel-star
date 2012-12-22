@@ -172,6 +172,7 @@ typedef struct {
     address_field addr;
     __u8 control;
     long_length length;
+    __u8_data[0];
 } __attribute__ ((packed)) long_frame_head;
 
 typedef struct {
