@@ -48,6 +48,9 @@
 #define N_PPS		18	/* Pulse per Second */
 #define N_V253		19	/* Codec control over voice modem */
 #define N_CAIF		20      /* CAIF protocol for talking to modems */
+#ifdef CONFIG_MACH_STAR_P999
+#define N_TS0710	20	/* TS0710 LDISC for older RIL. */
+#endif
 #ifdef CONFIG_MACH_BSSQ
 #define N_GSM0710      21      /* GSM 0710 Mux */ // seokjae.yoon@lge.com, 2012-02-13, restore the definition for KS1103
 #else

@@ -2722,8 +2722,10 @@ static int __init mux_init(void)
     mux_tx_wq = create_singlethread_workqueue("mux_tx"); //create_singlethread_workqueue
 
 #ifdef N_TS0710
+    printk(KERN_INFO "Registering legacy TS0710 line discipline");
     if ((result=tty_register_ldisc(N_TS0710, &ts_ldisc)) < 0)
 #else
+    printk(KERN_INFO "Registering TS2710 line discipline (may break old RIL)");
     if ((result=tty_register_ldisc(N_TS2710, &ts_ldisc)) < 0)
 #endif
     {
