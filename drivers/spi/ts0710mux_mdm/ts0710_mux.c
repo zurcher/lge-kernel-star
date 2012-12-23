@@ -2020,7 +2020,7 @@ static int mux_open(struct tty_struct *tty, struct file *filp)
     mux_filp[dlci] = filp;
 
     if (!(ipc_tty && dlci)) {
-	printk(KERN_INFO "mux_open ENODEV caused by missing ipc_tty (%d) or dlci (%d)", ipc_tty, dlci);
+	printk(KERN_INFO "mux_open ENODEV caused by missing ipc_tty (%d) or dlci (%d) using ldisc %d", ipc_tty, dlci, tty->ldisc->ops->num);
         return retval;
     }
 
@@ -2658,7 +2658,7 @@ struct tty_operations mux_ops = {
 static struct tty_ldisc_ops ts_ldisc = {
     .owner              = THIS_MODULE,
     .magic              = TTY_LDISC_MAGIC,
-    .name               = MUX_LDISC_DRIVER_NAME,
+    .name               = MUX_DRIVER_NAME,
     .open               = ts_ldisc_open,
     .close              = ts_ldisc_close,
     .read               = ts_ldisc_read,
@@ -2706,6 +2706,7 @@ static int __init mux_init(void)
     mux_driver->init_termios.c_oflag    = 0;
     mux_driver->init_termios.c_cflag    = B921600 | CS8 | CREAD;
     mux_driver->init_termios.c_lflag    = 0;
+    mux_driver->init_termios.c_line     = N_TS0710;
 
     tty_set_operations(mux_driver, &mux_ops);
 
