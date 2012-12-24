@@ -2730,6 +2730,7 @@ static int __init mux_init(void)
     if ((result=tty_register_ldisc(N_TS2710, &ts_ldisc)) < 0)
 #endif
     {
+	printk(KERN_INFO "mux_init failed to register TS[02]710 line discipline: %d", result);
         MUX_ERR("oops. cant register ldisc\n");
     }
 #ifdef ENABLE_MUX_WAKE_LOCK
