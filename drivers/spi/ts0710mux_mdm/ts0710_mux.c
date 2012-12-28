@@ -1183,10 +1183,12 @@ static int ts0710_open_channel(int dlci)
                 retval = -EAGAIN;
             } else if ((jiffies - t) >= TS0710MUX_TIME_OUT) {
                 MUX_DBG(6,"MUX DLCI:%d Send SABM timeout!\n",dlci);
+                printk(KERN_INFO "DLCI0 send SABM timeout");
                 retval = -ENODEV;
             }
 
             if (ts0710->dlci[0].state == CONNECTING) {
+                printk(KERN_INFO "DLCI0 Connect timeout. Disconnected.");
                 ts0710->dlci[0].state = DISCONNECTED;
             }
             wake_up_interruptible(&ts0710->dlci[0].open_wait);
