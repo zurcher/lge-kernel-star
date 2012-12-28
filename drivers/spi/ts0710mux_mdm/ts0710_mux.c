@@ -1841,6 +1841,8 @@ static void mux_rx_post(struct tty_struct *tty, const u8 *data, int framelen)
     int                             payload_len;
     int                             dlci = 0;
 
+    printk(KERN_INFO "mux_rx_post, framelen %d", framelen);
+
     short_pkt = (short_frame *) (data + ADDRESS_FIELD_OFFSET);
 
     dlci = short_pkt->h.addr.server_chn << 1 | short_pkt->h.addr.d;
@@ -1911,6 +1913,8 @@ static void mux_rx_raw_data(struct tty_struct *tty, const u8 *data, char *flags,
     u8 *mux_cbn_start_frame     = NULL;
     u8 *mux_cbn_end_frame       = (u8 *)&data[0];
     unsigned int bad_count      = 0;
+
+    printk(KERN_INFO "mux_rx_raw_data, size %d", size);
 
     while(offset < size)
     {
@@ -2357,6 +2361,8 @@ static int ts_ldisc_open(struct tty_struct *tty)
 
 static void ts_ldisc_receive_buf(struct tty_struct *tty, const u8 *data, char *flags, int size)
 {
+
+    printk(KERN_INFO "ts_ldisc_receive_buf, size %d", size);
 #ifdef MSPI2MSPI_TEST
     if(mspitest_enable == true)
     {
