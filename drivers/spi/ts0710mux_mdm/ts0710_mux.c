@@ -111,7 +111,6 @@
 /*------------------------------------------------------------------*/
 #define MUX_DRIVER_NAME                             "ts0710mux"
 #define MUX_DRIVER_VERSION                          "23-mar-12"
-#define MUX_LDISC_DRIVER_NAME                       "ts07.10"
 static const char mux_drv_driver_name[]             = MUX_DRIVER_NAME;
 static const char mux_drv_driver_version[]          = MUX_DRIVER_VERSION;
 /*------------------------------------------------------------------*/
@@ -1155,11 +1154,13 @@ static int ts0710_open_channel(int dlci)
             }
 
             if (ts0710->dlci[0].state == CONNECTING) {
+                printk(KERN_INFO "DLCI0 connect failed. Disconnected. Retval: %d", retval);
                 ts0710->dlci[0].state = DISCONNECTED;
             }
         } else if ((ts0710->dlci[0].state != DISCONNECTED)
                && (ts0710->dlci[0].state != REJECTED)) {
             MUX_DBG(6,"MUX DLCI:%d state is invalid!\n", dlci);
+            printk(KERN_INFO "MUX DLCI %d state is invalid (%d)", dlci, ts0710->dlci[0].state);
             return retval;
         } else {
             ts0710->initiator = 1;
@@ -1193,6 +1194,7 @@ static int ts0710_open_channel(int dlci)
     } else {        /* other channel */
         if ((ts0710->dlci[0].state != CONNECTED)
             && (ts0710->dlci[0].state != FLOW_STOPPED)) {
+            printk(KERN_INFO "Attempt to open channel %d without channel 0 open", dlci);
             return retval;
         } else if ((ts0710->dlci[dlci].state == CONNECTED)
                || (ts0710->dlci[dlci].state == FLOW_STOPPED)) {
@@ -1223,6 +1225,7 @@ static int ts0710_open_channel(int dlci)
         } else if ((ts0710->dlci[dlci].state != DISCONNECTED)
                && (ts0710->dlci[dlci].state != REJECTED)) {
             MUX_DBG(6,"MUX DLCI:%d state is invalid!\n", dlci);
+            printk(KERN_INFO "DLCI %d state is invalid %d", dlci, ts0710->dlci[dlci].state);
             return retval;
         } else {
             ts0710->dlci[dlci].state = CONNECTING;
@@ -1257,6 +1260,7 @@ static int ts0710_open_channel(int dlci)
             wake_up_interruptible(&ts0710->dlci[dlci].open_wait);
         }
     }
+    printk(KERN_INFO "ts0710_channel_open fallthrough for dlci %d, retval %d", dlci, retval);
     return retval;
 }
 
