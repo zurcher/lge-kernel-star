@@ -190,9 +190,9 @@ struct mux_data
 struct mux_frame_struct
 {
     struct mux_frame_struct     *next;
+    u8                         dlci;
     u8                          *data;
     int                         size;
-    int                         dlci;
 };
 
 struct mux_frames_pool_struct
@@ -1480,6 +1480,8 @@ static int mux_tx_send_frame(u8 dlci, int initiator, enum mux_frametype frametyp
     u_int8_t fcs;
     u8 *framebuf = kmalloc(MAX_FRAME_SIZE, GFP_ATOMIC);
 
+    printk(KERN_INFO "mux_tx_send_frame: sending frame type %d", frametype);
+
     if (framebuf == NULL)
     {
         MUX_ERR("Alloc Failed \n");
@@ -1810,6 +1812,8 @@ static void mux_rx_handle_work(struct work_struct *pwork)
 
     if(mux_frame_data != NULL)
     {
+        printk(KERN_INFO "mux_rx_handle_work received frame!");
+
         MUX_DBG(8,"MUX DLCI:%d we have data\n", dlci);
 
         ts0710_recv_data( &ts0710_connection,
@@ -2039,7 +2043,7 @@ static int mux_open(struct tty_struct *tty, struct file *filp)
         ts0710_init();
 
         mux_tty[dlci]--;
-	printk(KERN_INFO "mux_open error %d caused by failure in ts0710_open_channel");
+	printk(KERN_INFO "mux_open error %d caused by failure in ts0710_open_channel", retval);
         return retval;
     }
 
@@ -2051,7 +2055,7 @@ static int mux_open(struct tty_struct *tty, struct file *filp)
         ts0710_reset_dlci(dlci);
 
         mux_tty[dlci]--;
-	printk(KERN_INFO "mux_open error %d caused by failure in ts0710_open_channel(dlci)");
+	printk(KERN_INFO "mux_open error %d caused by failure in ts0710_open_channel(dlci)", retval);
         return retval;
     }
 
