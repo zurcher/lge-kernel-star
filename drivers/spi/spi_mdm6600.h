@@ -26,7 +26,7 @@
 /*------------------------------------------------------------------*/
 
 /* Extended header support for SPI frames */
-#define MSPI_EXTENDED_HEADER
+//#define MSPI_EXTENDED_HEADER
 
 /* Wakelocks support */
 #define WAKE_LOCK_RESUME
