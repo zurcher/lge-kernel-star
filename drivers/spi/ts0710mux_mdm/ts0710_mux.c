@@ -123,7 +123,7 @@ static const char mux_drv_driver_version[]          = MUX_DRIVER_VERSION;
 #define MUX_DRV_DEBUG_LEVEL                         10
 #define MUX_EXTENDED_DEBUG_OUTPUT_FORMAT
 #ifdef MUX_DRV_DEBUG_LEVEL
-static unsigned int debug_level                     = 0;
+static unsigned int debug_level                     = MUX_DRV_DEBUG_LEVEL;
 #endif
 #ifdef MUX_EXTENDED_DEBUG_OUTPUT_FORMAT
 #define MUX_DEBUG_OUTPUT_FORMAT                     MUX_DRIVER_NAME "(" MUX_DRIVER_VERSION ")"
