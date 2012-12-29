@@ -32,7 +32,7 @@ static struct spi_board_info __initdata spi_bus1_devices_info[] = {
 #else
 		.modalias = "ifxn721",
 #endif
-		.bus_num = 1,
+		.bus_num = 0,
 		.chip_select = 0,
 		.mode = SPI_MODE_1,
 		.max_speed_hz = 24000000,
@@ -52,8 +52,8 @@ static struct spi_board_info __initdata spi_bus1_devices_info[] = {
 static struct spi_board_info __initdata spi_bus2_devices_info[] = {
 	{
 		.modalias = "mdm6600",
-		.bus_num = 2,
-		.chip_select = 0,
+		.bus_num = 1,
+		.chip_select = 1,
 		.mode = SPI_MODE_1,
 		.max_speed_hz = 24000000,
 		.controller_data = &tegra_spi_slave_device2,  
