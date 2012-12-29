@@ -32,7 +32,7 @@ static struct spi_board_info __initdata spi_bus1_devices_info[] = {
 #else
 		.modalias = "ifxn721",
 #endif
-		.bus_num = 0,
+		.bus_num = 1,
 		.chip_select = 0,
 		.mode = SPI_MODE_1,
 		.max_speed_hz = 24000000,
@@ -53,7 +53,7 @@ static struct spi_board_info __initdata spi_bus2_devices_info[] = {
 	{
 		.modalias = "mdm6600",
 		.bus_num = 2,
-		.chip_select = 1,
+		.chip_select = 0,
 		.mode = SPI_MODE_1,
 		.max_speed_hz = 24000000,
 		.controller_data = &tegra_spi_slave_device2,  
@@ -71,12 +71,14 @@ static int spi_init(void)
 	platform_device_register(&tegra_spi_slave_device1);
 
 #ifdef CONFIG_DUAL_SPI
+	printk(KERN_INFO "attempting to register tegra slave dual SPI");
 	platform_device_register(&tegra_spi_slave_device2);
 #endif
 
 	spi_register_board_info(spi_bus1_devices_info, ARRAY_SIZE(spi_bus1_devices_info));
 
 #ifdef CONFIG_DUAL_SPI
+	printk(KERN_INFO "attempting to register tegra mdm6600 dual SPI");
 	spi_register_board_info(spi_bus2_devices_info, ARRAY_SIZE(spi_bus2_devices_info));
 #endif
 #else

@@ -129,7 +129,7 @@ struct tty_driver             *ifx_spi_tty_driver;
 /* Debug                                                            */
 /*------------------------------------------------------------------*/
 #ifdef MSPI_DRV_DEBUG_LEVEL
-static unsigned int debug_level                     = 0;
+static unsigned int debug_level                     = MSPI_DRV_DEBUG_LEVEL;
 #endif
 #ifdef MSPI_EXTENDED_DEBUG_OUTPUT_FORMAT
 #define MSPI_DEBUG_OUTPUT_FORMAT                    MSPI_DRIVER_NAME "(" MSPI_DRIVER_VERSION ")"
