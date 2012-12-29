@@ -1117,6 +1117,8 @@ static int __init spi_tegra_probe(struct platform_device *pdev)
 	int ret;
 	int i;
 
+	printk("spi_tegra_probe called");
+
 	master = spi_alloc_master(&pdev->dev, sizeof *tspi);
 	if (master == NULL) {
 		dev_err(&pdev->dev, "master allocation failed\n");

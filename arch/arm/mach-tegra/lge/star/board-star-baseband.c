@@ -52,7 +52,7 @@ static struct spi_board_info __initdata spi_bus1_devices_info[] = {
 static struct spi_board_info __initdata spi_bus2_devices_info[] = {
 	{
 		.modalias = "mdm6600",
-		.bus_num = 1,
+		.bus_num = 2,
 		.chip_select = 0,
 		.mode = SPI_MODE_1,
 		.max_speed_hz = 24000000,
