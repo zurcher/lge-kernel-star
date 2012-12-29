@@ -499,6 +499,12 @@ config SPI_MDM6600
 	help
 	Enable this driver to support MDM6600 Modem
 
+config DUAL_SPI
+	bool "LGE-P999 Dual SPI support"
+	depends on MACH_STAR_P999
+	help
+	Enable dual MDM6600 SPI for P999.
+
 config CP_WATCHER
 	bool "CP Status Watcher Driver"
 	default y
