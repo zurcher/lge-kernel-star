@@ -69,11 +69,15 @@ static int spi_init(void)
 {
 #ifdef CONFIG_MACH_STAR_P999
 	platform_device_register(&tegra_spi_slave_device1);
-	spi_register_board_info(spi_bus1_devices_info, ARRAY_SIZE(spi_bus1_devices_info));
 
 #ifdef CONFIG_DUAL_SPI
 	printk(KERN_INFO "attempting to register tegra slave dual SPI");
 	platform_device_register(&tegra_spi_slave_device2);
+#endif
+
+	spi_register_board_info(spi_bus1_devices_info, ARRAY_SIZE(spi_bus1_devices_info));
+
+#ifdef CONFIG_DUAL_SPI
 	printk(KERN_INFO "attempting to register tegra mdm6600 dual SPI");
 	spi_register_board_info(spi_bus2_devices_info, ARRAY_SIZE(spi_bus2_devices_info));
 #endif
