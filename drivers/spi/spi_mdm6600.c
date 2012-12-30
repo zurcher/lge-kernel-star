@@ -67,7 +67,7 @@
 #define MSPI_EXTENDED_DEBUG_OUTPUT_FORMAT
 
 #define MSPI_MAX_RX_FRAME_BUFS                      10
-#define MSPI_DATA_TABLE_SIZE                        1
+#define MSPI_DATA_TABLE_SIZE                        2
 #define MSPI_DEFAULT_TABLE_ENTRY                    0
 
 #define MSPI_WAKE_LOCK_TIMEOUT                      msecs_to_jiffies(600)
