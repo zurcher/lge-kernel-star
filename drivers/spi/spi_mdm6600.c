@@ -1573,6 +1573,8 @@ ifx_spi_sync_data(struct ifx_spi_data *spi_data)
 
     if(is_tx_rx_required == 0) t.tx_buf = NULL;
 
+    printk(KERN_INFO "ifx_spi_sync_data: sending buffer of length %d", mspi_curr_dma_data_len);
+
     spi_message_init(&m);
     spi_message_add_tail(&t, &m);
     status = spi_sync(spi_data->spi, &m);
@@ -1581,6 +1583,8 @@ ifx_spi_sync_data(struct ifx_spi_data *spi_data)
         if (status == 0)
             status = m.actual_length;
     }
+
+    printk(KERN_INFO "ifx_spi_sync_data: status is %d", status);
 
 
     if(status < 0)
