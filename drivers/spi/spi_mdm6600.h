@@ -38,7 +38,7 @@
 //#define MSPI_NEXTMAXED
 
 /* Use tty_insert_flip_string */
-//#define USE_TTY_INSERT
+#define USE_TTY_INSERT
 
 #define IFX_SPI_MAJOR                   153 /* assigned */
 #define IFX_N_SPI_MINORS                2   /* ... up to 256 */
