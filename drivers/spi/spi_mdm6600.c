@@ -1565,6 +1565,7 @@ ifx_spi_tty_callback( struct ifx_spi_data *spi_data)
 }
 
 static void ifx_spi_complete(void *arg) {
+    printk(KERN_INF) "mdm6600: ifx_spi_complete called");
     complete(arg);
 }
 
