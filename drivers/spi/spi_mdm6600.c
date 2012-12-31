@@ -1625,10 +1625,14 @@ ifx_spi_sync_data(struct ifx_spi_data *spi_data)
         m_pri.complete = ifx_spi_complete; // XXX FIXME: define this
         m_pri.context = &m_pri_done;
 
+        printk(KERN_INFO "mdm6600: performing spi_async");
         rwstat[0] = spi_async(spi_data->spi, &m_pri);
+        printk(KERN_INFO "mdm6600: async continuing, performing spi_sync");
         rwstat[1] = spi_sync(spi_data_table[sec_spi_idx]->spi, &m_sec);
+        printk(KERN_INFO "mdm6600: sync complete, waiting for async");
         if (rwstat[0] == 0) {
             wait_for_completion(&m_pri_done);
+            printk(KERN_INFO "mdm6600: async completed");
             rwstat[0] = m_pri.status;
         }
         m_pri.context = NULL;
