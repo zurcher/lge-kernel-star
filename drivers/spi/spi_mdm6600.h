@@ -96,9 +96,6 @@ struct ifx_spi_frame_header {
 
 #else /* MSPI_EXTENDED_HEADER */
 
-/* Default mSPI frame size incl. header */
-#define MSPI_DEF_BUFF_SIZE              3200
-
 /* Old header format for static SPI buffer feat */
 struct ifx_spi_frame_header {
     unsigned int curr_data_size:12;
@@ -112,6 +109,9 @@ struct ifx_spi_frame_header {
     unsigned int dsr_dtr:1;
 };
 
+/* Default mSPI frame size incl. header */
+#define MSPI_DEF_BUFF_SIZE              (3068 + sizeof(struct ifx_spi_frame_header))
+
 #endif  /* MSPI_EXTENDED_HEADER */
 
 /* Size of the mSPI frame header */
@@ -121,7 +121,7 @@ struct ifx_spi_frame_header {
 #define MSPI_DEF_DATALOAD               (MSPI_DEF_BUFF_SIZE - MSPI_HEADER_SIZE)
 
 /* Maximum mSPI frame size incl. header */
-#define MSPI_MAX_BUFF_SIZE              4096
+#define MSPI_MAX_BUFF_SIZE              (3068 + MSPI_HEADER_SIZE)
 
 /* Maximum size of the data payload in the max sized frame */
 #define MSPI_MAX_DATALOAD               (MSPI_MAX_BUFF_SIZE - MSPI_HEADER_SIZE)
