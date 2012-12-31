@@ -67,7 +67,7 @@
 #define MSPI_EXTENDED_DEBUG_OUTPUT_FORMAT
 
 #define MSPI_MAX_RX_FRAME_BUFS                      10
-#define MSPI_DATA_TABLE_SIZE                        1
+#define MSPI_DATA_TABLE_SIZE                        2
 #define MSPI_DEFAULT_TABLE_ENTRY                    0
 
 #define MSPI_WAKE_LOCK_TIMEOUT                      msecs_to_jiffies(600)
@@ -824,6 +824,8 @@ static int ifx_spi_probe(struct spi_device *spi)
     unsigned char wq_name[20];
     static int index = 0;
 
+   /* use global "spi_data_table" */
+
   if(index >= MSPI_DATA_TABLE_SIZE)
   {
         MSPI_DBG(5, "probe failed, too many devices, index = %d", index);
@@ -837,10 +839,15 @@ static int ifx_spi_probe(struct spi_device *spi)
 
 
     dev_set_drvdata(&spi->dev,spi_data);
-    INIT_WORK(&spi_data->ifx_work,ifx_spi_handle_work);
-    INIT_WORK(&spi_data->ifx_free_irq_work, ifx_spi_handle_free_irq_work);
-    sprintf(wq_name, "spi_wq_%d", index);
-    spi_data->ifx_wq = create_singlethread_workqueue(wq_name);
+    if (index == 0) {
+        INIT_WORK(&spi_data->ifx_work,ifx_spi_handle_work);
+        INIT_WORK(&spi_data->ifx_free_irq_work, ifx_spi_handle_free_irq_work);
+        sprintf(wq_name, "spi_wq_%d", index);
+        spi_data->ifx_wq = create_singlethread_workqueue(wq_name);
+    } else {
+        spi_data->ifx_wq = spi_data_table[0]->ifx_wq;
+    }
+
     if(spi_data->ifx_wq == NULL)
     {
         MSPI_ERR("TS failed to allocate workqueue %s\n",wq_name);
@@ -859,35 +866,35 @@ static int ifx_spi_probe(struct spi_device *spi)
         MSPI_ERR("TS failed to setup SPI \n");
     }
 
-    status = ifx_spi_allocate_frame_memory(spi_data, MSPI_DEF_DATALOAD + MSPI_HEADER_SIZE);
-    if(status != 0)
-    {
-        MSPI_ERR("Failed to allocate memory for buffers");
-        return -ENOMEM;
-    }
+    if (index == 0) {
+        status = ifx_spi_allocate_frame_memory(spi_data, MSPI_DEF_DATALOAD + MSPI_HEADER_SIZE);
+        if(status != 0)
+        {
+            MSPI_ERR("Failed to allocate memory for buffers");
+            return -ENOMEM;
+        }
 
 #ifdef WAKE_LOCK_RESUME
-    wake_lock_init(&spi_data->wake_lock, WAKE_LOCK_SUSPEND, "mspi_wake");
+        wake_lock_init(&spi_data->wake_lock, WAKE_LOCK_SUSPEND, "mspi_wake");
 #endif
 
-    status = ifx_spi_probe_hw_dependent(spi_data);
+        status = ifx_spi_probe_hw_dependent(spi_data);
 
-    if (status != 0)
-    {
-        MSPI_ERR("Failed to request IRQ for SRDY - IFX SPI Probe Failed \n");
-        ifx_spi_free_frame_memory(spi_data);
-        if(spi_data != NULL)
+        if (status != 0)
         {
-            kfree(spi_data);
+            MSPI_ERR("Failed to request IRQ for SRDY - IFX SPI Probe Failed \n");
+            ifx_spi_free_frame_memory(spi_data);
+            if(spi_data != NULL)
+            {
+                kfree(spi_data);
+            }
+            return status;
         }
-        return status;
-    }
 
-    if(index == 0)
-    {
         spi_data->pm_notifier.notifier_call = ifx_pm_notifier_event;
         register_pm_notifier(&spi_data->pm_notifier);
     }
+
     ifx_spi_buffer_initialization(spi_data);
     spi_data_table[index++] = spi_data;
     status = 0;
