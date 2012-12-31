@@ -1628,9 +1628,9 @@ ifx_spi_sync_data(struct ifx_spi_data *spi_data)
 
         printk(KERN_INFO "mdm6600: performing spi_async");
         rwstat[0] = spi_async(spi_data->spi, &m_pri);
-        printk(KERN_INFO "mdm6600: async continuing, performing spi_sync");
+        printk(KERN_INFO "mdm6600: async continuing (%d), performing spi_sync", rwstat[0]);
         rwstat[1] = spi_sync(spi_data_table[sec_spi_idx]->spi, &m_sec);
-        printk(KERN_INFO "mdm6600: sync complete, waiting for async");
+        printk(KERN_INFO "mdm6600: sync complete (%d), waiting for async", rwstat[1]);
         if (rwstat[0] == 0) {
             wait_for_completion(&m_pri_done);
             printk(KERN_INFO "mdm6600: async completed");
