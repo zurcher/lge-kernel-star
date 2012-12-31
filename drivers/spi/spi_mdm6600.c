@@ -1564,10 +1564,111 @@ ifx_spi_tty_callback( struct ifx_spi_data *spi_data)
     }
 }
 
+static void ifx_spi_complete(void *arg) {
+    complete(arg);
+}
+
 static void
 ifx_spi_sync_data(struct ifx_spi_data *spi_data)
 {
     int status              = -ESHUTDOWN;
+
+    /* Index of the secondary SPI in the "dual SPI" pair */
+    int i;
+    int sec_spi_idx = 0;
+    int rwstat[2] = {0, 0};
+    int half_buffer;
+
+    // XXX
+
+    /* Set up primary and secondary transfers. */
+    struct spi_message m_pri, m_sec;
+    struct spi_transfer t_pri = {
+        .tx_buf = spi_data->ifx_tx_buffer,
+        .rx_buf = spi_data->ifx_rx_buffer,
+    };
+    struct spi_transfer t_sec;
+
+    if (ifx_shutdown != 0 || spi_data->spi == NULL) return;
+
+    /* Make sure the buffer can be divided in two, then calculate 1/2 */
+    if (mspi_curr_dma_data_len & 1) {
+        MSPI_ERR("Unexpected (unsupported) data length %d", mspi_curr_dma_data_len);
+        return;
+    }
+    half_buffer = t_pri.len = t_sec.len = mspi_curr_dma_data_len / 2;
+    t_sec.tx_buf = spi_data->ifx_tx_buffer + half_buffer;
+    t_sec.rx_buf = spi_data->ifx_rx_buffer + half_buffer;
+
+    /* Loop through initialized devices and determine which *isn't* the primary */
+    for (i = 0; i < MSPI_DATA_TABLE_SIZE; i++) {
+        if (spi_data_table[i]) {
+            if (spi_data_table[i]->spi->master->bus_num != spi_data->spi->master->bus_num) {
+                sec_spi_idx = i;
+            }
+        }
+    }
+  
+    //came from mdm6600 master
+    //if (!spi_data->ifx_master_initiated_transfer)
+    //    memset(spi_data->ifx_tx_buffer, 0, sizeof(ifx_spi_frame_header));
+
+    spi_message_init(&m_pri);
+    spi_message_init(&m_sec);
+    spi_message_add_tail(&t_pri, &m_pri);
+    spi_message_add_tail(&t_sec, &m_sec);
+
+    if (spi_data->spi == NULL) {
+        rwstat[0] = -ESHUTDOWN;
+    } else {
+        DECLARE_COMPLETION_ONSTACK(m_pri_done);
+        m_pri.complete = ifx_spi_complete; // XXX FIXME: define this
+        m_pri.context = &m_pri_done;
+
+        rwstat[0] = spi_async(spi_data->spi, &m_pri);
+        rwstat[1] = spi_sync(spi_data_table[sec_spi_idx]->spi, &m_sec);
+        if (rwstat[0] == 0) {
+            wait_for_completion(&m_pri_done);
+            rwstat[0] = m_pri.status;
+        }
+        m_pri.context = NULL;
+    }
+
+    if ((rwstat[0] == 0) && (rwstat[1] == 0)) {
+        rwstat[0] = m_pri.status;
+        rwstat[1] = m_sec.status;
+        if ((rwstat[0] == 0) && (rwstat[1] == 0)) {
+            rwstat[0] = m_pri.actual_length;
+            rwstat[1] = m_sec.actual_length;
+        }
+    } else{
+        MSPI_ERR("Transmission unsuccessful");
+    }
+
+    if (rwstat[0] < 0) {
+        MSPI_ERR("Failure in primary transmission");
+        status = rwstat[0];
+    } else if (rwstat[1] < 0) {
+        MSPI_ERR("Failure in secondary transmission");
+        status = rwstat[1];
+    } else {
+        status = rwstat[0] + rwstat[1];
+    }
+
+    if (status < 0) {
+        MSPI_ERR("spi error encountered (%d), halting", status);
+        ifx_shutdown = 1;
+    }
+
+    if (status != mspi_curr_dma_data_len) {
+        MSPI_ERR("[EBS-SPI] TX-RX SPI Failure !! dma_len=%d ret_len=%d\n", mspi_curr_dma_data_len, status);
+        return;
+    }
+
+    ifx_spi_tty_callback(spi_data);
+
+// --- DEFAULT CODE --- 
+#if 0
 
     struct spi_message  m;
     struct spi_transfer t   = {
@@ -1606,6 +1707,7 @@ ifx_spi_sync_data(struct ifx_spi_data *spi_data)
         return;
     }
     ifx_spi_tty_callback(spi_data);
+#endif
 }
 
 static void ifx_spi_ap_ready(struct spi_device *spi)
