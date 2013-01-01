@@ -1972,7 +1972,7 @@ __init ifx_spi_init(void)
     ifx_spi_tty_driver->subtype = SERIAL_TYPE_NORMAL;
     ifx_spi_tty_driver->flags = TTY_DRIVER_REAL_RAW;
     ifx_spi_tty_driver->init_termios = tty_std_termios;
-    ifx_spi_tty_driver->init_termios.c_cflag = B115200 | CS8 | CREAD | HUPCL | CLOCAL;
+    ifx_spi_tty_driver->init_termios.c_cflag = B230400 | CS8 | CREAD | HUPCL | CLOCAL;
     tty_set_operations(ifx_spi_tty_driver, &ifx_spi_ops);
 
     status = tty_register_driver(ifx_spi_tty_driver);
