@@ -67,8 +67,11 @@
 #include <mach/gpio-names.h>
 //#define MSPI_MRDY_GPIO                  TEGRA_GPIO_PO5
 //#define MSPI_SRDY_GPIO                  TEGRA_GPIO_PO0
-#define MSPI_MRDY_GPIO                  TEGRA_GPIO_PU6
-#define MSPI_SRDY_GPIO                  TEGRA_GPIO_PJ6
+//#define MSPI_MRDY_GPIO                  TEGRA_GPIO_PU6
+//#define MSPI_SRDY_GPIO                  TEGRA_GPIO_PJ6
+/* GPIOs from P999DW service manual */
+#define MSPI_MRDY_GPIO                    TEGRA_GPIO_PJ4
+#define MSPI_SRDY_GPIO                    TEGRA_GPIO_PU6
 
 /*------------------------------------------------------------------*/
 /* Buffer setup                                                     */
